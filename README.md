@@ -1,128 +1,45 @@
 # Fast API
 
-## Pre requisito 
+## Pre requisito
 
 - Python
 - Django (pip install django)
+
+## Clone infra
+
+```bash
+git clone git@github.com:ricardochaves/fast-api-jsm.git
+```
 
 ## Inicio
 
 Iniciando um projeto Django
 
 ```bash
-django-admin startproject fast_api .
+docker-compose run --rm app django-admin startproject fast_api .
 ```
 
 Executando
 
 ```bash
-python manage.py runserver 
+docker-compose up app
 ```
 
-- http://127.0.0.1:8000/
-- http://127.0.0.1:8000/admin/
+- http://0.0.0.0:8000/
 
 Criando uma aplicação
 
 ```bash
-python manage.py startapp core
+docker-compose run --rm app python manage.py startapp core
 ```
 
 -----> open -na "PyCharm.app" .
-
-adicionar Dockerfile
-
-```
-FROM python:3.8.2-buster
-
-WORKDIR /web
-
-COPY . /web
-
-RUN pip install -r requirements.txt
-
-```
-
-Adicionar docker-compose.yml
-
-```yml 
-version: "3.7"
-services:
-  db:
-    image: postgres:10.1-alpine
-  app:
-    build:
-      context: .
-    env_file: .env
-    volumes:
-      - .:/app
-    working_dir: /app
-    ports:
-      - "8000:8000"
-    depends_on:
-      - db
-    command:
-      [
-        "./wait-for-it.sh",
-        "${DB_HOST}:${DB_PORT}",
-        "-t",
-        "120",
-        "--",
-        "./start.sh",
-      ]
-```
-
-Adicionar requirements.txt
-
-```
-django==3.0.5
-django-health-check==3.4.1
-django-filter==2.2.0
-djangorestframework==3.11.0
-psycopg2-binary==2.8.5
-
-```
-
-Adicionar .env
-
-```
-##################
-#### Database engine
-DB_ENGINE=django.db.backends.postgresql
-DB_DATABASE=postgres
-DB_USER=postgres
-DB_PASSWORD=
-DB_HOST=db
-DB_PORT=5432
-```
-
-Adicionar start.sh
-
-```bash 
-#!/bin/bash
-python manage.py makemigrations
-python manage.py migrate
-
-python manage.py runserver 0.0.0.0:8000
-```
-
-Adicionar wait-for-it.sh
-https://raw.githubusercontent.com/ricardochaves/financeiro-bot/master/wait-for-it.sh
-
-Rodar `chmod +x`
-
-
-Rodar build para cirar as imagens
-
-```bash
-docker-compose build 
-```
 
 -----> Confirgurar interpretador
 
 Enquanto ele fazer o build e o interpretador vamos criando as classes:
 
-```python 
+```python
 from django.db import models
 
 class BookStore(models.Model):
@@ -154,7 +71,18 @@ class Book(models.Model):
 
 Configurar `settings.py`
 
-```python 
+```python
+
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    "core"
+]
+
 ALLOWED_HOSTS = ["*"]
 
 DATABASES = {
@@ -172,7 +100,7 @@ DATABASES = {
 
 Configurar `admin.py`
 
-```python 
+```python
 from django.contrib import admin
 
 from core.models import BookStore, Book
