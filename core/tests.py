@@ -110,3 +110,27 @@ class RestApiTestCase(TestCase):
         self.assertEqual(
             Book.objects.filter(name="book_3", book_store__name="store_1").count(), 0
         )  # NO creation
+
+    # HTTP PUT -- assertion with HTTP 200
+    def test_should_update_book_from_store_1_http_200(self):
+        book_update_data = {
+            "name": "book_4",
+            "book_store": str(self.book_store_1.id),
+            "qty": 10,
+        }
+
+        book_for_update = Book.objects.create(
+            name="book_4", qty=0, book_store=self.book_store_1
+        )
+
+        response = self.client.put(
+            f"/api/v1/book/{book_for_update.id}/",
+            book_update_data,
+            content_type="application/json",
+        )
+        json_response = response.json()
+
+        # assertions
+        self.assertEqual(response.status_code, 200)
+        updated_book = Book.objects.get(id=book_for_update.id)
+        self.assertEqual(updated_book.qty, 10)
