@@ -1,7 +1,8 @@
 from core.models import Book, BookStore
+from django.contrib.auth.models import User
 from django.test import TestCase
-from rest_framework.reverse import reverse
-from rest_framework.utils import json
+from rest_framework.authtoken.models import Token
+from rest_framework.test import APIClient
 
 
 class BookStoreTestCase(TestCase):
@@ -31,10 +32,11 @@ class BookTestCase(TestCase):
 
 
 class RestApiTestCase(TestCase):
-
-    # Test case related variables
     @classmethod
     def setUpTestData(cls):
+        """
+        Shared data through all the texts ~ fixture!
+        """
         cls.book_store_1 = BookStore.objects.create(cnpj="cnpj_1", name="store_1")
         cls.book_store_2 = BookStore.objects.create(cnpj="cnpj_2", name="store_2")
 
@@ -44,6 +46,14 @@ class RestApiTestCase(TestCase):
         cls.book_2_store_1 = Book.objects.create(
             book_store=cls.book_store_1, name="book_2", qty=4
         )
+
+        # authentication
+        cls.partner_user = User.objects.create(username="partner", password="partner")
+        cls.partner_token = Token.objects.create(user=cls.partner_user)
+
+    def setUp(self):
+        self.client = APIClient()  # REST framework's test client
+        # self.client.credentials(HTTP_AUTHORIZATION=f"Token {self.partner_token.key}")
 
     # HTTP GET -- with and without query strings -- assertion with HTTP 200
     def test_should_get_a_list_of_stores_http_200(self):
@@ -124,11 +134,8 @@ class RestApiTestCase(TestCase):
         )
 
         response = self.client.put(
-            f"/api/v1/book/{book_for_update.id}/",
-            book_update_data,
-            content_type="application/json",
+            f"/api/v1/book/{book_for_update.id}/", book_update_data,
         )
-        json_response = response.json()
 
         # assertions
         self.assertEqual(response.status_code, 200)
