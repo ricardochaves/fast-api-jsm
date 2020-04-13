@@ -39,6 +39,8 @@ docker-compose run --rm app python manage.py startapp core
 
 Enquanto ele fazer o build e o interpretador vamos criando as classes:
 
+---> Isso vai lockar o projeto na apresentação (demora ~ 1 minuto)
+
 ```python
 from django.db import models
 
@@ -72,6 +74,8 @@ class Book(models.Model):
 Configurar `settings.py`
 
 ```python
+
+---> Ativei o black., isort, mas não o mypy
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -133,6 +137,10 @@ class BookAdmin(admin.ModelAdmin):
     admin_order_field = "-created_at"
 
 ```
+
+Mostrar os admins:
+
+---> ```docker-compose up app```
 
 ## Health Check
 
@@ -236,3 +244,5 @@ urlpatterns = [
     path("api/v1/", include(router.urls)),
 ]
 ```
+
+---> Create some stores and books on admin
