@@ -20,6 +20,7 @@ from rest_framework import routers
 
 router = routers.DefaultRouter()
 router.register("book-store", views.BookStoreViewSet)
+router.register("book", views.BookViewSet)
 
 urlpatterns = [
     path("admin/", admin.site.urls),
