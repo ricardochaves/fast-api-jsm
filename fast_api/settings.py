@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "health_check",
     "health_check.db",
     "rest_framework",
+    "rest_framework.authtoken",
     "django_filters",
 ]
 
