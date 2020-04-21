@@ -1,7 +1,7 @@
 FROM python:3.8.2-buster
 
-WORKDIR /web
+WORKDIR /app
 
-COPY . /web
+COPY . /app
 
 RUN pip install -r requirements.txt
