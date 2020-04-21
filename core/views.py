@@ -12,6 +12,12 @@ class BookStoreSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+class BookSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Book
+        fields = "__all__"
+
+
 class BookStoreViewSet(viewsets.ModelViewSet):
 
     queryset = BookStore.objects.all()
@@ -24,12 +30,6 @@ class BookStoreViewSet(viewsets.ModelViewSet):
 
     filter_fields = ("name", "cnpj")
     search_fields = ("name", "cnpj")
-
-
-class BookSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Book
-        fields = "__all__"
 
 
 class BookViewSet(viewsets.ModelViewSet):
